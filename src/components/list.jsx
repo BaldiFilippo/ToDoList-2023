@@ -1,5 +1,6 @@
 import { CalendarIcon, MapPinIcon, UsersIcon } from '@heroicons/react/20/solid'
 
+import Select from './Select'
 const todos = [
   {
     id: 1,
@@ -37,7 +38,8 @@ export default function List() {
                     {todo.title}
                   </p>
                   <div className="ml-2 flex flex-shrink-0">
-                    <p
+                    <Select />
+                    {/* <p
                       className={
                         todo.completed
                           ? 'inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800'
@@ -45,10 +47,10 @@ export default function List() {
                       }
                     >
                       {todo.completed ? 'Completed' : 'Uncompleted'}
-                    </p>
+                    </p> */}
                   </div>
                 </div>
-                <div className="mt-2 sm:flex sm:justify-between">
+                <div className="mt-2 sm:flex ">
                   <div className="sm:flex"></div>
                   <div className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
                     <CalendarIcon

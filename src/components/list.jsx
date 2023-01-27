@@ -1,31 +1,64 @@
 import { CalendarIcon, MapPinIcon, UsersIcon } from '@heroicons/react/20/solid'
-
+import supabase from '../supabase'
 import Select from './Select'
+
+import React, { useState, useEffect } from 'react'
+
 const todos = [
   {
     id: 1,
-    title: 'Back End Developer',
-    completed: false,
-    location: 'Remote',
-    date: 'January 7, 2020',
+    title: 'Complete online JavaScript course',
+    date: '2020-01-07',
+    closeDate: '2020-01-07',
+    completed: true,
   },
   {
     id: 2,
-    title: 'Front End Developer',
-    completed: true,
-    location: 'Remote',
-    date: 'January 7, 2020',
+    title: 'Jog around the park 3x',
+    date: '2020-01-07',
+    closeDate: '2020-01-07',
+    completed: false,
   },
   {
     id: 3,
-    title: 'User Interface Designer',
+    title: '10 minutes meditation',
+    date: '2020-01-07',
+    closeDate: '2020-01-07',
     completed: false,
-    location: 'Remote',
-    date: 'January 14, 2020',
+  },
+  {
+    id: 4,
+    title: 'Read for 1 hour',
+    date: '2020-01-07',
+    closeDate: '2020-01-07',
+    completed: false,
+  },
+  {
+    id: 5,
+    title: 'Pick up groceries',
+    date: '2020-01-07',
+    closeDate: '2020-01-07',
+    completed: false,
+  },
+  {
+    id: 6,
+    title: 'Complete Todo App on Frontend Mentor',
+    date: '2020-01-07',
+    closeDate: '2020-01-07',
+    completed: false,
   },
 ]
 
 export default function List() {
+  async function fetchData() {
+    let { data: tasks, error } = await supabase.from('todos').select('*')
+    console.log(tasks)
+  }
+
+  useEffect(() => {
+    fetchData()
+  }, [])
+
   return (
     <div className="overflow-hidden bg-white shadow sm:rounded-md">
       <ul role="list" className="divide-y divide-gray-200">

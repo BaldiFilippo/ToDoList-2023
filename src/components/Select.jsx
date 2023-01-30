@@ -1,111 +1,48 @@
-import { Fragment, useState } from 'react'
-import { Listbox, Transition } from '@headlessui/react'
-import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
+import { useState } from 'react'
+import { supabase } from '../supabase.js'
 
-const publishingOptions = [
-  {
-    title: 'Completed',
-    description: 'This job posting can be viewed by anyone who has the link.',
-    current: true,
-  },
-  {
-    title: 'Uncompleted',
-    description: 'This job posting will no longer be publicly accessible.',
-    current: false,
-  },
-]
+const select = ({ todo, onDelete }) => {
+  const [isCompleted, setIsCompleted] = useState(todo.completed)
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
-}
-
-export default function Select() {
-  const [selected, setSelected] = useState(publishingOptions[0])
+  const toggleCompleted = async () => {
+    const { data, error } = await supabase
+      .from('todos')
+      .update({ completed: !isCompleted })
+      .eq('id', todo.id)
+      .single()
+    if (error) {
+      console.error(error)
+    }
+    setIsCompleted(data.completed)
+  }
 
   return (
-    <Listbox value={selected} onChange={setSelected}>
-      {({ open }) => (
-        <>
-          <Listbox.Label className="sr-only">
-            {' '}
-            Change published status{' '}
-          </Listbox.Label>
-          <div className="">
-            <div className="inline-flex divide-x divide-indigo-600 rounded-md shadow-sm">
-              <div className="inline-flex divide-x divide-indigo-600 rounded-md shadow-sm">
-                <div className="inline-flex items-center rounded-l-md border border-transparent bg-indigo-500 py-2 pl-3 pr-4 text-white shadow-sm">
-                  <CheckIcon className="h-5 w-5" aria-hidden="true" />
-                  <p className="ml-2.5 text-sm font-medium">{selected.title}</p>
-                </div>
-                <Listbox.Button className="inline-flex items-center rounded-l-none rounded-r-md bg-indigo-500 p-2 text-sm font-medium text-white hover:bg-indigo-600 ">
-                  <span className="sr-only">Change published status</span>
-                  <ChevronDownIcon
-                    className="h-5 w-5 text-white"
-                    aria-hidden="true"
-                  />
-                </Listbox.Button>
-              </div>
-            </div>
-
-            <Transition
-              show={open}
-              as={Fragment}
-              leave="transition ease-in duration-100"
-              leaveFrom="opacity-100"
-              leaveTo="opacity-0"
-            >
-              <Listbox.Options className="absolute right-9  lg:right-20 z-10 mt-2 w-72 origin-top-right divide-y divide-gray-200 overflow-hidden rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
-                {publishingOptions.map((option) => (
-                  <Listbox.Option
-                    key={option.title}
-                    className={({ active }) =>
-                      classNames(
-                        active ? 'text-white bg-indigo-500' : 'text-gray-900',
-                        'cursor-default select-none p-4 text-sm'
-                      )
-                    }
-                    value={option}
-                  >
-                    {({ selected, active }) => (
-                      <div className="flex flex-col">
-                        <div className="flex justify-between">
-                          <p
-                            className={
-                              selected ? 'font-semibold' : 'font-normal'
-                            }
-                          >
-                            {option.title}
-                          </p>
-                          {selected ? (
-                            <span
-                              className={
-                                active ? 'text-white' : 'text-indigo-500'
-                              }
-                            >
-                              <CheckIcon
-                                className="h-5 w-5"
-                                aria-hidden="true"
-                              />
-                            </span>
-                          ) : null}
-                        </div>
-                        <p
-                          className={classNames(
-                            active ? 'text-indigo-200' : 'text-gray-500',
-                            'mt-2'
-                          )}
-                        >
-                          {option.description}
-                        </p>
-                      </div>
-                    )}
-                  </Listbox.Option>
-                ))}
-              </Listbox.Options>
-            </Transition>
-          </div>
-        </>
-      )}
-    </Listbox>
+    <div className={'p-3 max-h-14 flex align-center justify-between space-x-2'}>
+      <span className={' flex-grow'}>
+        <input
+          className="h-4 w-4 rounded border-gray-300  text-indigo-600 focus:ring-indigo-500"
+          onChange={toggleCompleted}
+          type="checkbox"
+          checked={isCompleted ? true : ''}
+        />
+        <span
+          className={`w-full flex-grow ${isCompleted ? 'line-through' : ''}`}
+        >
+          {todo.task}
+        </span>
+      </span>
+      <button
+        className="inline-flex items-center rounded border border-transparent bg-indigo-100 px-2 text-xs font-medium text-indigo-700 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+        onClick={(e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          onDelete(todo.id)
+        }}
+      >
+        X
+      </button>
+    </div>
   )
 }
+
+export default select

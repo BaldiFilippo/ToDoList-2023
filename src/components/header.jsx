@@ -15,10 +15,8 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function Header() {
+export default function Header({ addTodo, newTaskTextRef }) {
   return (
-    // <div className="flex flex-col">
-    //   <h1 className="text-left text-2xl ">Logo</h1>
     <div className=" border-gray-200 pt-5 pb-5 sm:flex sm:items-center sm:justify-between">
       <div className="flex">
         <div className="relative rounded-none rounded-l-md border border-gray-300 px-3 py-2 shadow-sm focus-within:border-indigo-600 focus-within:ring-1 focus-within:ring-indigo-600">
@@ -29,15 +27,18 @@ export default function Header() {
             To Do
           </label>
           <input
+            ref={newTaskTextRef}
             type="text"
             name="name"
             id="name"
+            onKeyUp={(e) => e.key === 'Enter' && addTodo()}
             className="block w-60 border-0 p-0 text-gray-900 placeholder-gray-500 focus:ring-0 sm:text-sm"
             placeholder="type here"
           />
         </div>
         <button
           type="button"
+          onClick={addTodo}
           className="relative inline-flex items-center rounded-r-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 "
         >
           Add
@@ -94,12 +95,12 @@ export default function Header() {
               leaveFrom="transform opacity-100 scale-100"
               leaveTo="transform opacity-0 scale-95"
             >
-              <Menu.Items className="absolute right-9 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+              <Menu.Items className="absolute right-8 md:right-8 lg:right-40 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                 <div className="py-1">
                   <Menu.Item>
                     {({ active }) => (
                       <a
-                        href="#"
+                        href=""
                         className={classNames(
                           active
                             ? 'bg-gray-100 text-gray-900'
@@ -181,6 +182,5 @@ export default function Header() {
         </div>
       </div>
     </div>
-    // </div>
   )
 }

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { supabase } from '../supabase.js'
+import { TrashIcon } from '@heroicons/react/20/solid'
 
 const select = ({ todo, onDelete }) => {
   const [isCompleted, setIsCompleted] = useState(todo.completed)
@@ -31,16 +32,15 @@ const select = ({ todo, onDelete }) => {
           {todo.task}
         </span>
       </span>
-      <button
-        className="inline-flex items-center rounded border border-transparent bg-indigo-100 px-2 text-xs font-medium text-indigo-700 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+      <TrashIcon
+        className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500 cursor-pointer hover:text-red-500"
+        aria-hidden="true"
         onClick={(e) => {
           e.preventDefault()
           e.stopPropagation()
           onDelete(todo.id)
         }}
-      >
-        X
-      </button>
+      />
     </div>
   )
 }

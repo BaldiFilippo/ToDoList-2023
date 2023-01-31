@@ -15,7 +15,12 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function Header({ addTodo, newTaskTextRef }) {
+export default function Header({
+  addTodo,
+  newTaskTextRef,
+  searchTaskTextRef,
+  handleInputChange,
+}) {
   return (
     <div className=" border-gray-200 pt-5 pb-5 sm:flex sm:items-center sm:justify-between">
       <div className="flex">
@@ -61,12 +66,16 @@ export default function Header({ addTodo, newTaskTextRef }) {
             </div>
             <input
               type="text"
+              ref={searchTaskTextRef}
+              onChange={handleInputChange}
               name="mobile-search-candidate"
               id="mobile-search-candidate"
               className="block w-full rounded-none rounded-l-md border-gray-300 pl-10 focus:border-indigo-500 focus:ring-indigo-500 sm:hidden"
               placeholder="Search"
             />
             <input
+              ref={searchTaskTextRef}
+              onChange={handleInputChange}
               type="text"
               name="desktop-search-candidate"
               id="desktop-search-candidate"

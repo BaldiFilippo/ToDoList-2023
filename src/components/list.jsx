@@ -6,6 +6,7 @@ import React, { useState, useEffect, useRef } from 'react'
 export default function List() {
   const [todos, setTodos] = useState([])
   const newTaskTextRef = useRef()
+  const [searchTaskTextRef, setSearchTaskTextRef] = useState('')
   const [errorText, setError] = useState('')
 
   useEffect(() => {
@@ -13,12 +14,21 @@ export default function List() {
   }, [])
 
   const fetchTodos = async () => {
-    let { data: todos, error } = await supabase
-      .from('todos')
-      .select('*')
-      .order('id', { ascending: false })
-    if (error) console.log('error', error)
-    else setTodos(todos)
+    if (searchTaskTextRef === '') {
+      const { data: todos, error } = await supabase.from('todos').select('*')
+      if (error) console.log('error', error)
+      else setTodos(todos)
+      return
+    } else {
+      let { data: todos, error } = await supabase
+        .from('todos')
+        .select('*')
+        .ilike('text', `%${searchTaskTextRef}%`)
+        .order('id', { ascending: false })
+
+      if (error) console.log('error', error)
+      else setTodos(todos)
+    }
   }
 
   const addTodo = async () => {
@@ -26,18 +36,25 @@ export default function List() {
       setError('Please enter a task')
       return
     }
+
     const text = newTaskTextRef.current.value
     newTaskTextRef.current.value = ''
     setError('')
-    const { data: todo, error } = await supabase
+    let { data: todo, error } = await supabase
       .from('todos')
       .insert([{ text }])
       .single()
-    if (error) console.log('error', error)
-    else {
+
+    console.log(todo, 'todo aggiunta nel DB')
+    if (error) {
+      console.log('error', error)
+    } else if (!todo) {
+      console.log(todo, 'todo not found')
+    } else {
       setTodos([todo, ...todos])
       setError(null)
       newTaskTextRef.current.value = ''
+      console.log(todo, ' Lista aggiornata')
     }
   }
 
@@ -50,11 +67,22 @@ export default function List() {
     }
   }
 
+  const handleInputChange = (e) => {
+    setSearchTaskTextRef(() => {
+      return e.target.value
+    })
+    fetchTodos().catch(console.error)
+  }
+
   return (
     <>
-      <Header addTodo={addTodo} newTaskTextRef={newTaskTextRef} />
+      <Header
+        addTodo={addTodo}
+        newTaskTextRef={newTaskTextRef}
+        handleInputChange={handleInputChange}
+      />
       <div className="overflow-hidden bg-white py-2  sm:rounded-md">
-        <ul role="list" className="divide-y divide-gray-200">
+        <div role="list" className="divide-y divide-gray-200">
           {todos.length ? (
             todos.map((todo) => (
               <TodoItem
@@ -65,10 +93,10 @@ export default function List() {
             ))
           ) : (
             <span className="text-5xl text-left font-bold tracking-tight text-indigo-600 sm:text-5xl lg:text-5xl">
-              You do have any tasks yet!
+              You don't have any activities yet!
             </span>
           )}
-        </ul>
+        </div>
       </div>
     </>
   )

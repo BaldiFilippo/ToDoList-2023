@@ -14,6 +14,7 @@ export default function List() {
   }, [])
 
   const fetchTodos = async () => {
+    // console.log(searchTaskTextRef)
     if (searchTaskTextRef === '') {
       const { data: todos, error } = await supabase.from('todos').select('*')
       if (error) console.log('error', error)
@@ -40,21 +41,18 @@ export default function List() {
     const text = newTaskTextRef.current.value
     newTaskTextRef.current.value = ''
     setError('')
+
     let { data: todo, error } = await supabase
       .from('todos')
       .insert([{ text }])
-      .single()
+      .select()
 
-    console.log(todo, 'todo aggiunta nel DB')
     if (error) {
       console.log('error', error)
-    } else if (!todo) {
-      console.log(todo, 'todo not found')
     } else {
-      setTodos([todo, ...todos])
+      setTodos([todo[0], ...todos])
       setError(null)
       newTaskTextRef.current.value = ''
-      console.log(todo, ' Lista aggiornata')
     }
   }
 

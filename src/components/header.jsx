@@ -80,7 +80,7 @@ export default function Header({
               name="desktop-search-candidate"
               id="desktop-search-candidate"
               className="hidden w-full rounded-none rounded-l-md border-gray-300 pl-10 focus:border-indigo-500 focus:ring-indigo-500 sm:block sm:text-sm"
-              placeholder="Search candidates"
+              placeholder="Search tasks "
             />
           </div>
           <Menu as="div" type="button" className="">

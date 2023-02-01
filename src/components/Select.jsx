@@ -11,6 +11,8 @@ const select = ({ todo, onDelete }) => {
       .update({ completed: !isCompleted })
       .eq('id', todo.id)
       .single()
+      .select()
+
     if (error) {
       console.error(error)
     }
@@ -19,7 +21,7 @@ const select = ({ todo, onDelete }) => {
 
   return (
     <div className={'p-3 max-h-14 flex align-center justify-between space-x-2'}>
-      <span className={' flex-grow'}>
+      <span className={' flex-grow '}>
         <input
           className="h-4 w-4 rounded border-gray-300  text-indigo-600 focus:ring-indigo-500"
           onChange={toggleCompleted}
